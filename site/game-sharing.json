@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 2,
+  "publicationOrigin": "https://hongdaeesc-cppcpc5p.manus.game",
+  "title": "Hongdae Escape: Are You Open-Minded?",
+  "description": "A pixel-art satire stealth game: sneak a tourist through Hongdae past leather-jacket pickup artists, and win dialogue battles with witty comebacks when they catch you.",
+  "defaultCaptions": {},
+  "assets": {
+    "favicon": {
+      "digest": "sha256:f2e8e6bf758079b2533451298deb4fae1e008177ebd2d4bc7544631cda003913",
+      "path": "share/f2e8e6bf758079b2533451298deb4fae1e008177ebd2d4bc7544631cda003913.png",
+      "mime": "image/png",
+      "width": 256,
+      "height": 256,
+      "sizeBytes": 1009,
+      "sourcePath": "assets/share/favicon.png"
+    }
+  }
+}
