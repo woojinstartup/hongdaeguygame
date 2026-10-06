@@ -306,12 +306,12 @@ func _build_howto() -> void:
 func _build_encounter() -> void:
 	_encounter_screen = _overlay_screen(0.82)
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 28)
+	row.add_theme_constant_override("separation", 20)
 	_portrait = PortraitScript.new()
-	_portrait.custom_minimum_size = Vector2(320, 320)
+	_portrait.custom_minimum_size = Vector2(420, 460)
 	_portrait.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(_portrait)
-	var panel := _panel(Vector2(760, 440))
+	var panel := _panel(Vector2(740, 460))
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 12)
 	_enc_name = _label("", 20, MUTED, true)

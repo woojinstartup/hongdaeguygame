@@ -1,5 +1,115 @@
 {
   "assets": {
+    "assets/portraits/basic.png": {
+      "declaredUseEvidence": [],
+      "generator": {},
+      "inputs": [],
+      "license": {},
+      "origin": "unknown",
+      "referenceEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "regions": [],
+      "sha256": "sha256:cca01572801aa19f8f5e6fad911ed484b0d87a04553c59e4a996d037567b2247",
+      "shipped": true,
+      "size": 584302,
+      "source": {},
+      "status": "present",
+      "transformations": [],
+      "useEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "used": true,
+      "usedBy": []
+    },
+    "assets/portraits/boss.png": {
+      "declaredUseEvidence": [],
+      "generator": {},
+      "inputs": [],
+      "license": {},
+      "origin": "unknown",
+      "referenceEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "regions": [],
+      "sha256": "sha256:857fd7c266ec2c1d4619196ddc8220bf0e9077ac27aea3682971bc64951c72f3",
+      "shipped": true,
+      "size": 803277,
+      "source": {},
+      "status": "present",
+      "transformations": [],
+      "useEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "used": true,
+      "usedBy": []
+    },
+    "assets/portraits/dasher.png": {
+      "declaredUseEvidence": [],
+      "generator": {},
+      "inputs": [],
+      "license": {},
+      "origin": "unknown",
+      "referenceEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "regions": [],
+      "sha256": "sha256:a78bd5ddd813c9fe3f2ad704469258e8f8737dde28e49689b8c905f642c6166d",
+      "shipped": true,
+      "size": 701931,
+      "source": {},
+      "status": "present",
+      "transformations": [],
+      "useEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "used": true,
+      "usedBy": []
+    },
+    "assets/portraits/photo.png": {
+      "declaredUseEvidence": [],
+      "generator": {},
+      "inputs": [],
+      "license": {},
+      "origin": "unknown",
+      "referenceEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "regions": [],
+      "sha256": "sha256:5cb9e4c7a711a224e0ec1bf269ced08c95db5071ae4a1bbb7006b441e985cc0b",
+      "shipped": true,
+      "size": 600341,
+      "source": {},
+      "status": "present",
+      "transformations": [],
+      "useEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "used": true,
+      "usedBy": []
+    },
+    "assets/portraits/trio.png": {
+      "declaredUseEvidence": [],
+      "generator": {},
+      "inputs": [],
+      "license": {},
+      "origin": "unknown",
+      "referenceEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "regions": [],
+      "sha256": "sha256:ed583ebf07c35ca582efdf3def8823a5a6118c29adff08bc452fcc70a23f1307",
+      "shipped": true,
+      "size": 697185,
+      "source": {},
+      "status": "present",
+      "transformations": [],
+      "useEvidence": [
+        "scripts/hongdae/portrait.gd"
+      ],
+      "used": true,
+      "usedBy": []
+    },
     "assets/share/favicon.png": {
       "declaredUseEvidence": [],
       "generator": {},
@@ -385,9 +495,9 @@
         ]
       }
     ],
-    "pckSha256": "sha256:47e694affcf50642a69b7bb5129f3b4873d0520acd03be83c875b34be1704ec9",
+    "pckSha256": "sha256:f41ee222b0736510d37a3e37139c03aa350bc7e24bdf6d11a1268abc87535e49",
     "profile": "release",
-    "sourceFingerprint": "sha256:cf07dd0412f8ce412c5c49bd865eaa1907abc220a0ec8a9c84aa27a4df213fc7"
+    "sourceFingerprint": "sha256:c647ac73fab429e2dfc75ebd101dc1446365ab3ade3f1e50693f03332326e8f8"
   },
   "procedures": {},
   "summary": {
@@ -420,9 +530,9 @@
     },
     "files": {
       "downloaded": 0,
-      "retained": 16,
-      "shipped": 16,
-      "used": 4
+      "retained": 21,
+      "shipped": 21,
+      "used": 9
     },
     "origins": {
       "ai": {
@@ -456,9 +566,9 @@
         "used": 3
       },
       "unknown": {
-        "retained": 1,
-        "shipped": 1,
-        "used": 1
+        "retained": 6,
+        "shipped": 6,
+        "used": 6
       }
     },
     "packs": {
