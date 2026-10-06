@@ -515,14 +515,232 @@ func _update_bubbles(delta: float) -> void:
 
 const NEON := [Color("ff2e88"), Color("b14aed"), Color("2de2e6"), Color("ffd23f"), Color("ff6c11")]
 
+func _h(x: int, y: int, k: int = 0) -> int:
+	return absi((x * 73856093) ^ (y * 19349663) ^ ((k + stage_index * 31) * 83492791)) % 1000
+
+func _theme() -> String:
+	return str(stage.get("theme", "street"))
+
+func _is_wall(x: int, y: int) -> bool:
+	if x < 0 or y < 0 or x >= COLS or y >= ROWS:
+		return true
+	return grid[y][x] == "#"
+
 func _floor_color(x: int, y: int) -> Color:
-	match str(stage.get("theme", "street")):
+	match _theme():
 		"park":
-			return Color("2f5a3c") if (x + y) % 2 == 0 else Color("33603f")
+			return Color("3f7a4a") if (x + y) % 2 == 0 else Color("437f4e")
 		"club":
-			return Color("33264f") if (x + y) % 2 == 0 else Color("372a55")
+			return Color("43306a") if (x + y) % 2 == 0 else Color("4a3574")
 		_:
-			return Color("3b3352") if (x + y) % 2 == 0 else Color("3f3757")
+			return Color("3a3448")
+
+func _draw_floor(x: int, y: int) -> void:
+	var r := Rect2(x * TILE, y * TILE, TILE, TILE)
+	var p := r.position
+	var theme := _theme()
+	draw_rect(r, _floor_color(x, y))
+	if theme == "park":
+		for i: int in 4:
+			var hx := (_h(x, y, i) % 14) + 1
+			var hy := (_h(x, y, i + 7) % 13) + 2
+			draw_rect(Rect2(p + Vector2(hx, hy), Vector2(1, 2)), Color("2f6439"))
+			draw_rect(Rect2(p + Vector2(hx + 1, hy + 1), Vector2(1, 1)), Color("5c9b62"))
+		if _h(x, y, 3) % 5 == 0:
+			var fx := 3 + _h(x, y, 4) % 10
+			var fy := 3 + _h(x, y, 5) % 10
+			var fc: Color = [Color("ffd23f"), Color("ff7eb6"), Color("f5ecff")][_h(x, y, 6) % 3]
+			draw_rect(Rect2(p + Vector2(fx, fy), Vector2(2, 2)), fc)
+		# Gravel path along the edges next to walls.
+		if _is_wall(x, y - 1):
+			draw_rect(Rect2(p, Vector2(16, 3)), Color("8a7a5c"))
+			draw_rect(Rect2(p + Vector2(0, 3), Vector2(16, 1)), Color("2a5233"))
+		return
+	if theme == "club":
+		# Glossy tiles with a thin grout grid and reflections.
+		draw_rect(Rect2(p, Vector2(16, 1)), Color("2e2148"))
+		draw_rect(Rect2(p, Vector2(1, 16)), Color("2e2148"))
+		draw_rect(Rect2(p + Vector2(2, 2), Vector2(5, 1)), Color(1, 1, 1, 0.06))
+		if _h(x, y, 1) % 4 == 0:
+			var c: Color = NEON[_h(x, y, 2) % NEON.size()]
+			draw_rect(Rect2(p + Vector2(3, 6), Vector2(1, 6)), Color(c, 0.35))
+			draw_rect(Rect2(p + Vector2(4, 8), Vector2(1, 4)), Color(c, 0.2))
+	else:
+		# Asphalt speckle.
+		for i: int in 5:
+			draw_rect(Rect2(p + Vector2(_h(x, y, i) % 16, _h(x, y, i + 9) % 16), Vector2(1, 1)), Color("4a4358") if i % 2 == 0 else Color("2f2a3b"))
+		var walls_v := _is_wall(x - 1, y) and _is_wall(x + 1, y)
+		var walls_h := _is_wall(x, y - 1) and _is_wall(x, y + 1)
+		if walls_h and not walls_v and _h(x, y, 8) % 3 == 0:
+			# Crosswalk stripes in horizontal passages.
+			for i: int in 4:
+				draw_rect(Rect2(p + Vector2(1 + i * 4, 3), Vector2(2, 10)), Color("d9d3e6", 0.55))
+		elif walls_v and not walls_h and _h(x, y, 8) % 3 == 0:
+			for i: int in 4:
+				draw_rect(Rect2(p + Vector2(3, 1 + i * 4), Vector2(10, 2)), Color("d9d3e6", 0.55))
+		elif _h(x, y, 10) % 17 == 0:
+			draw_circle(p + Vector2(8, 8), 4.0, Color("2a2535"))
+			draw_arc(p + Vector2(8, 8), 4.0, 0, TAU, 12, Color("55506a"), 1.0)
+		# Sidewalk paving next to buildings.
+		if _is_wall(x, y - 1):
+			draw_rect(Rect2(p, Vector2(16, 5)), Color("5b5370"))
+			draw_rect(Rect2(p + Vector2(0, 5), Vector2(16, 1)), Color("8a82a0"))
+			for i: int in 2:
+				draw_rect(Rect2(p + Vector2(i * 8 + (y % 2) * 4, 0), Vector2(1, 5)), Color("4a4360"))
+	# Building shadow falls onto the tile below it.
+	if _is_wall(x, y - 1) and theme != "park":
+		draw_rect(Rect2(p, Vector2(16, 2)), Color(0, 0, 0, 0.35))
+
+func _draw_building(x: int, y: int) -> void:
+	var r := Rect2(x * TILE, y * TILE, TILE, TILE)
+	var p := r.position
+	var park := _theme() == "park"
+	var club := _theme() == "club"
+	var front := not _is_wall(x, y + 1) and y < ROWS - 1
+	if park:
+		# Hedges and park fences.
+		draw_rect(r, Color("1d4a2a"))
+		draw_circle(p + Vector2(4, 5), 5.0, Color("2b6a3a"))
+		draw_circle(p + Vector2(12, 6), 5.0, Color("2f7340"))
+		draw_circle(p + Vector2(8, 10), 6.0, Color("27613a"))
+		draw_rect(Rect2(p + Vector2(3, 3), Vector2(2, 1)), Color("4f9a5c"))
+		draw_rect(Rect2(p + Vector2(11, 4), Vector2(2, 1)), Color("4f9a5c"))
+		if front:
+			draw_rect(Rect2(p + Vector2(0, 13), Vector2(16, 3)), Color("6b4a2f"))
+			for i: int in 4:
+				draw_rect(Rect2(p + Vector2(1 + i * 4, 11), Vector2(1, 5)), Color("8a6a45"))
+		return
+	var hue := _h(x, y, 20)
+	var walls := [Color("2a1c40"), Color("33213f"), Color("23203a"), Color("3a2238")]
+	var wall_c: Color = walls[hue % walls.size()]
+	if not front:
+		# Rooftop: ledge, tar texture, AC units and water tanks.
+		draw_rect(r, Color("1a1228"))
+		draw_rect(Rect2(p + Vector2(1, 1), Vector2(14, 14)), Color("221830"))
+		if _h(x, y, 21) % 3 == 0:
+			draw_rect(Rect2(p + Vector2(3, 4), Vector2(6, 5)), Color("6b6b80"))
+			draw_rect(Rect2(p + Vector2(4, 5), Vector2(4, 3)), Color("4a4a5c"))
+			draw_rect(Rect2(p + Vector2(5, 6), Vector2(2, 1)), Color("8a8aa0"))
+		elif _h(x, y, 21) % 3 == 1:
+			draw_circle(p + Vector2(10, 8), 3.5, Color("3d8fd1"))
+			draw_rect(Rect2(p + Vector2(8, 6), Vector2(2, 1)), Color("8fd3ff"))
+		else:
+			for i: int in 3:
+				var lit := _h(x, y, 30 + i) % 2 == 0
+				draw_rect(Rect2(p + Vector2(2 + i * 5, 3), Vector2(3, 3)), Color("ffd23f", 0.75) if lit else Color("140c20"))
+				draw_rect(Rect2(p + Vector2(2 + i * 5, 9), Vector2(3, 3)), Color("ffb347", 0.6) if not lit else Color("140c20"))
+		return
+	# Street-facing facade: wall, upper windows, sign band and shopfront.
+	draw_rect(r, wall_c)
+	draw_rect(Rect2(p, Vector2(16, 1)), wall_c.lightened(0.15))
+	for wx: int in [2, 10]:
+		var on := _h(x, y, wx) % 3 != 0
+		draw_rect(Rect2(p + Vector2(wx, 1), Vector2(4, 3)), Color("ffd890") if on else Color("150d22"))
+		draw_rect(Rect2(p + Vector2(wx, 4), Vector2(4, 1)), wall_c.darkened(0.4))
+	var c: Color = NEON[(hue / 7) % NEON.size()]
+	var flicker := 1.0 if (int(_clock * 6.0 + hue) % 23) != 0 else 0.45
+	var shop := hue % 4
+	match shop:
+		0:
+			# Neon signboard with pixel lettering.
+			draw_rect(Rect2(p + Vector2(1, 5), Vector2(14, 5)), Color("120a1c"))
+			draw_rect(Rect2(p + Vector2(1, 5), Vector2(14, 5)), Color(c, flicker), false, 1.0)
+			for i: int in 4:
+				if _h(x, y, 40 + i) % 4 != 0:
+					draw_rect(Rect2(p + Vector2(3 + i * 3, 7), Vector2(2, 1 + _h(x, y, 50 + i) % 2)), Color(c.lightened(0.4), flicker))
+		1:
+			# Striped awning (cafe).
+			for i: int in 4:
+				draw_rect(Rect2(p + Vector2(i * 4, 6), Vector2(4, 3)), c if i % 2 == 0 else Color("f5ecff"))
+			for i: int in 4:
+				draw_rect(Rect2(p + Vector2(i * 4 + 1, 9), Vector2(2, 1)), c.darkened(0.3))
+		2:
+			# Vertical karaoke sign hanging off the wall.
+			draw_rect(Rect2(p + Vector2(11, 1), Vector2(4, 10)), Color("120a1c"))
+			draw_rect(Rect2(p + Vector2(12, 2), Vector2(2, 8)), Color(c, flicker))
+			draw_rect(Rect2(p + Vector2(1, 6), Vector2(9, 3)), Color(c.darkened(0.5), 1.0))
+		_:
+			# Lightbox sign.
+			draw_rect(Rect2(p + Vector2(1, 5), Vector2(14, 4)), Color(c, flicker))
+			draw_rect(Rect2(p + Vector2(4, 6), Vector2(8, 2)), Color("120a1c", 0.6))
+	# Shopfront: glass, door, warm interior.
+	draw_rect(Rect2(p + Vector2(0, 10), Vector2(16, 6)), Color("1a1226"))
+	draw_rect(Rect2(p + Vector2(1, 11), Vector2(8, 4)), Color("ffcf8a", 0.55))
+	draw_rect(Rect2(p + Vector2(2, 12), Vector2(2, 3)), Color("6e4a8a", 0.7))
+	draw_rect(Rect2(p + Vector2(10, 11), Vector2(5, 5)), Color("0e0816"))
+	draw_rect(Rect2(p + Vector2(13, 13), Vector2(1, 1)), Color("ffd23f"))
+
+func _draw_store(x: int, y: int) -> void:
+	var r := Rect2(x * TILE, y * TILE, TILE, TILE)
+	var p := r.position
+	var top := tile_char(Vector2i(x, y - 1)) != "C"
+	draw_rect(r, Color("e9f6f2"))
+	if top:
+		draw_rect(Rect2(p, Vector2(16, 4)), Color("7b3fa0"))
+		draw_rect(Rect2(p + Vector2(0, 4), Vector2(16, 1)), Color("2ecc71"))
+		draw_rect(Rect2(p + Vector2(2, 1), Vector2(3, 2)), Color("f5ecff"))
+		draw_rect(Rect2(p + Vector2(6, 1), Vector2(1, 2)), Color("f5ecff"))
+		draw_rect(Rect2(p + Vector2(8, 1), Vector2(2, 2)), Color("2ecc71"))
+	var y0 := 6 if top else 1
+	# Shelves with colourful snacks behind glass.
+	draw_rect(Rect2(p + Vector2(1, y0), Vector2(14, 15 - y0)), Color("bfe3f0"))
+	for row: int in 3:
+		var sy := y0 + 1 + row * 3
+		if sy > 14:
+			break
+		draw_rect(Rect2(p + Vector2(2, sy + 2), Vector2(12, 1)), Color("8aa9b8"))
+		for i: int in 5:
+			draw_rect(Rect2(p + Vector2(2 + i * 2 + (row % 2), sy), Vector2(1, 2)), NEON[(_h(x, y, i + row * 5)) % NEON.size()])
+	draw_rect(Rect2(p + Vector2(0, 15), Vector2(16, 1)), Color("2ecc71"))
+
+func _draw_crowd(x: int, y: int) -> void:
+	var p := Vector2(x * TILE, y * TILE)
+	_draw_floor(x, y)
+	# A busker and a ring of onlookers.
+	if _h(x, y, 60) % 3 == 0:
+		draw_rect(Rect2(p + Vector2(10, 9), Vector2(4, 6)), Color("1a1226"))
+		draw_rect(Rect2(p + Vector2(11, 10), Vector2(2, 2)), Color("6b6b80"))
+	for i: int in 4:
+		var hx := 1 + (_h(x, y, i) % 11)
+		var hy := 2 + (_h(x, y, i + 4) % 8)
+		var bob := 1 if int(_clock * 4.0 + i + x) % 2 == 0 else 0
+		var body: Color = [Color("e85d75"), Color("4ea8de"), Color("f5c542"), Color("9b5de5"), Color("43aa8b")][_h(x, y, i + 8) % 5]
+		draw_rect(Rect2(p + Vector2(hx, hy + 3 - bob), Vector2(4, 4)), body)
+		draw_rect(Rect2(p + Vector2(hx + 1, hy - bob), Vector2(2, 3)), Color("f2c6a0"))
+		draw_rect(Rect2(p + Vector2(hx + 1, hy - bob), Vector2(2, 1)), Color("2a1b12"))
+	if int(_clock * 2.0 + x) % 3 == 0:
+		draw_rect(Rect2(p + Vector2(7, 0), Vector2(1, 2)), Color("ffd23f"))
+		draw_rect(Rect2(p + Vector2(8, 0), Vector2(1, 1)), Color("ffd23f"))
+
+func _draw_mat(x: int, y: int) -> void:
+	var p := Vector2(x * TILE, y * TILE)
+	_draw_floor(x, y)
+	var base := Color("e63946") if (x + y) % 2 == 0 else Color("457b9d")
+	draw_rect(Rect2(p + Vector2(1, 2), Vector2(14, 13)), base.darkened(0.25))
+	draw_rect(Rect2(p + Vector2(1, 1), Vector2(14, 13)), base)
+	for i: int in 3:
+		draw_rect(Rect2(p + Vector2(1 + i * 5, 1), Vector2(2, 13)), Color(1, 1, 1, 0.35))
+		draw_rect(Rect2(p + Vector2(1, 2 + i * 5), Vector2(14, 1)), Color(1, 1, 1, 0.25))
+	match _h(x, y, 70) % 3:
+		0:
+			draw_rect(Rect2(p + Vector2(5, 6), Vector2(6, 4)), Color("b5793c"))
+			draw_rect(Rect2(p + Vector2(6, 4), Vector2(4, 2)), Color("8a5a2b"))
+		1:
+			draw_rect(Rect2(p + Vector2(6, 5), Vector2(2, 5)), Color("2ecc71"))
+			draw_rect(Rect2(p + Vector2(9, 6), Vector2(2, 4)), Color("f5ecff"))
+		_:
+			draw_circle(p + Vector2(8, 8), 2.5, Color("ffd23f"))
+
+func _draw_tree(x: int, y: int) -> void:
+	var p := Vector2(x * TILE, y * TILE)
+	_draw_floor(x, y)
+	draw_circle(p + Vector2(8, 13), 5.0, Color(0, 0, 0, 0.25))
+	draw_rect(Rect2(p + Vector2(7, 9), Vector2(3, 6)), Color("6b3a1f"))
+	draw_circle(p + Vector2(8, 7), 6.5, Color("1f5a35"))
+	draw_circle(p + Vector2(6, 5), 4.0, Color("2d7a46"))
+	draw_circle(p + Vector2(10, 6), 3.5, Color("2a7342"))
+	draw_rect(Rect2(p + Vector2(4, 3), Vector2(3, 1)), Color("5cb36b"))
+	draw_rect(Rect2(p + Vector2(10, 4), Vector2(2, 1)), Color("5cb36b"))
 
 func _draw() -> void:
 	if grid.is_empty():
@@ -530,6 +748,7 @@ func _draw() -> void:
 	for y: int in ROWS:
 		for x: int in COLS:
 			_draw_tile(x, y)
+	_draw_ambient()
 	_draw_goal()
 	for t: Vector2i in items:
 		_draw_item(tile_center(t), items[t])
@@ -549,57 +768,54 @@ func _draw() -> void:
 			_draw_enemy(d[1])
 
 func _draw_tile(x: int, y: int) -> void:
-	var r := Rect2(x * TILE, y * TILE, TILE, TILE)
-	var ch: String = grid[y][x]
-	var floor_c := _floor_color(x, y)
-	match ch:
+	match str(grid[y][x]):
 		"#":
-			var base := Color("120b1f") if stage.get("theme") != "park" else Color("10241a")
-			draw_rect(r, base)
-			draw_rect(Rect2(r.position + Vector2(1, 1), Vector2(14, 14)), Color("1b0f2c") if stage.get("theme") != "park" else Color("16301f"))
-			var below := tile_char(Vector2i(x, y + 1))
-			if below != "#" and y < ROWS - 1:
-				var c: Color = NEON[(x * 7 + y * 3 + stage_index) % NEON.size()]
-				draw_rect(Rect2(r.position + Vector2(3, 9), Vector2(10, 4)), c.darkened(0.55))
-				draw_rect(Rect2(r.position + Vector2(4, 10), Vector2(8, 2)), c)
-			else:
-				for wx: int in [3, 9]:
-					var lit := (x * 13 + y * 7 + wx) % 3 == 0
-					draw_rect(Rect2(r.position + Vector2(wx, 4), Vector2(4, 3)), Color("ffd23f").darkened(0.35) if lit else Color("1a1030"))
+			_draw_building(x, y)
 		"C":
-			draw_rect(r, Color("dff6ff"))
-			draw_rect(Rect2(r.position, Vector2(16, 3)), Color("2ecc71"))
-			draw_rect(Rect2(r.position + Vector2(2, 6), Vector2(5, 7)), Color("9ad1e8"))
-			draw_rect(Rect2(r.position + Vector2(9, 6), Vector2(5, 7)), Color("9ad1e8"))
+			_draw_store(x, y)
 		"B":
-			draw_rect(r, floor_c)
-			for i: int in 5:
-				var hx := 2 + (i * 5 + x * 3) % 12
-				var hy := 3 + (i * 7 + y * 5) % 10
-				draw_rect(Rect2(r.position + Vector2(hx, hy), Vector2(3, 3)), NEON[(i + x) % NEON.size()].darkened(0.3))
-				draw_rect(Rect2(r.position + Vector2(hx, hy - 1), Vector2(3, 1)), Color("2a1b12"))
+			_draw_crowd(x, y)
 		"P":
-			draw_rect(r, floor_c)
-			var mat := Color("e63946") if (x + y) % 2 == 0 else Color("457b9d")
-			draw_rect(Rect2(r.position + Vector2(1, 1), Vector2(14, 14)), mat)
-			for i: int in 4:
-				draw_rect(Rect2(r.position + Vector2(1 + i * 4, 1), Vector2(2, 14)), Color(1, 1, 1, 0.25))
+			_draw_mat(x, y)
 		"T":
-			draw_rect(r, floor_c)
-			draw_rect(Rect2(r.position + Vector2(6, 10), Vector2(4, 5)), Color("6b3a1f"))
-			draw_rect(Rect2(r.position + Vector2(2, 1), Vector2(12, 10)), Color("2d6a4f"))
-			draw_rect(Rect2(r.position + Vector2(4, 2), Vector2(5, 4)), Color("40916c"))
+			_draw_tree(x, y)
 		_:
-			draw_rect(r, floor_c)
-			if stage.get("theme") != "park" and (x + y * 3) % 5 == 0:
-				draw_rect(Rect2(r.position + Vector2(6, 7), Vector2(4, 1)), Color("ffd23f").darkened(0.6))
+			_draw_floor(x, y)
+
+func _draw_ambient() -> void:
+	var theme := _theme()
+	if theme == "park":
+		# Street lamps glow pools.
+		for i: int in 4:
+			var lx := (3 + i * 5) * TILE + 8
+			draw_circle(Vector2(lx, 5 * TILE), 22.0, Color(1.0, 0.85, 0.5, 0.05))
+		return
+	# Neon spill onto the street in front of each lit facade.
+	for y: int in ROWS - 1:
+		for x: int in COLS:
+			if grid[y][x] == "#" and not _is_wall(x, y + 1):
+				var c: Color = NEON[(_h(x, y, 20) / 7) % NEON.size()]
+				var a := 0.10 + 0.04 * sin(_clock * 2.0 + x)
+				draw_rect(Rect2(x * TILE, (y + 1) * TILE, TILE, 7), Color(c, a))
+	if theme == "club":
+		# Sweeping club spotlights.
+		for i: int in 3:
+			var t := _clock * (0.6 + i * 0.25) + i * 2.1
+			var center := Vector2(160 + cos(t) * 120.0, 80 + sin(t * 1.3) * 50.0)
+			draw_circle(center, 18.0, Color(NEON[i], 0.08))
+			draw_circle(center, 10.0, Color(NEON[i], 0.07))
 
 func _draw_goal() -> void:
 	var r := Rect2(goal_tile.x * TILE, goal_tile.y * TILE, TILE, TILE)
+	var pulse := 0.5 + 0.5 * sin(_clock * 4.0)
+	draw_circle(r.get_center(), 12.0 + pulse * 3.0, Color(1.0, 0.82, 0.25, 0.18))
 	draw_rect(r, Color("ffd23f"))
-	draw_rect(Rect2(r.position + Vector2(2, 2), Vector2(12, 12)), Color("ff9f1c"))
-	draw_rect(Rect2(r.position + Vector2(5, 4), Vector2(6, 8)), Color("ffd23f"))
-	draw_rect(Rect2(r.position + Vector2(7, 7), Vector2(2, 2)), Color("ff9f1c"))
+	draw_rect(Rect2(r.position + Vector2(1, 1), Vector2(14, 14)), Color("ff9f1c"))
+	draw_rect(Rect2(r.position + Vector2(3, 3), Vector2(10, 10)), Color("ffd23f").lerp(Color.WHITE, pulse * 0.3))
+	# Arrow pointing in.
+	draw_rect(Rect2(r.position + Vector2(7, 5), Vector2(2, 5)), Color("7a2e00"))
+	draw_rect(Rect2(r.position + Vector2(5, 8), Vector2(6, 1)), Color("7a2e00"))
+	draw_rect(Rect2(r.position + Vector2(6, 9), Vector2(4, 1)), Color("7a2e00"))
 
 func _draw_item(c: Vector2, item: String) -> void:
 	var o := c - Vector2(5, 5)

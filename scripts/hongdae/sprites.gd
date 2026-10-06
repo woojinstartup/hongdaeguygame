@@ -3,22 +3,22 @@ extends RefCounted
 ## Procedural 16x16 pixel-art characters drawn with draw_rect.
 
 const PLAYER := [
-	"................",
-	"......YYYY......",
-	".....YYYYYY.....",
-	".....YSSSSY.....",
-	".....YSKSKY.....",
-	".....YSSSSY.....",
-	"......SSSS......",
-	"....TTTTTTTT....",
-	"...TTBTTTTBTT...",
-	"...STTBTTBTTS...",
-	"...S.TTTTTT.S...",
-	".....TTTTTT.....",
-	".....DDDDDD.....",
-	".....DD..DD.....",
-	".....DD..DD.....",
-	".....WW..WW.....",
+	".....oooooo.....",
+	"....oAAaaAAo....",
+	"...oAAAAAAaAo...",
+	"...oAaSSSSAAo...",
+	"...oASKSSKSAo...",
+	"...oAASMMSAAo...",
+	"...oAAoSSoAAo...",
+	"...oAEEEEEEAo...",
+	"..oSAEEeeEEASo..",
+	"..oS.EEEEEE.So..",
+	"..oFFEEEEEEE.S..",
+	"..oFFEEEEEEEE...",
+	"....oeEEEEEeo...",
+	".....SS..SS.....",
+	".....SS..SS.....",
+	".....QQ..QQ.....",
 ]
 
 const GUY := [
@@ -85,6 +85,9 @@ const BASE_PALETTE := {
 	"R": Color("1a1a1a"), "P": Color("5ff3ff"), "C": Color("ffd23f"),
 	"N": Color("6b3a1f"), "s": Color("c98d63"), "O": Color("ff8c42"),
 	"L": Color("2b2b36"), "l": Color("5a5a6e"),
+	"A": Color("6e2f3a"), "a": Color("b0546a"), "M": Color("e63964"),
+	"E": Color("ff7eb6"), "e": Color("c9407f"), "F": Color("ffd23f"),
+	"Q": Color("2b1840"), "o": Color("1a0f22"),
 }
 
 static func palette_for(kind: String, revealed: bool = true) -> Dictionary:
@@ -122,8 +125,8 @@ static func draw_player(ci: CanvasItem, center: Vector2, facing_left: bool, airp
 	var origin := (center - Vector2(8, 12)).round()
 	draw_pattern(ci, PLAYER, BASE_PALETTE, origin, facing_left)
 	if airpods:
-		ci.draw_rect(Rect2(origin + Vector2(4, 4), Vector2(1, 2)), Color.WHITE)
-		ci.draw_rect(Rect2(origin + Vector2(11, 4), Vector2(1, 2)), Color.WHITE)
+		ci.draw_rect(Rect2(origin + Vector2(3, 4), Vector2(1, 2)), Color.WHITE)
+		ci.draw_rect(Rect2(origin + Vector2(12, 4), Vector2(1, 2)), Color.WHITE)
 
 static func draw_guy(ci: CanvasItem, kind: String, center: Vector2, facing_left: bool, revealed: bool) -> void:
 	var origin := (center - Vector2(8, 12)).round()
