@@ -67,9 +67,9 @@ const OPENERS := {
 }
 const FOLLOW_UPS := {
 	"default": [
-		{"line": "Ah~ you know... open mindeu. Korean culture experience?", "options": [
-			["witty", "I already experienced it. It's you. Bye."],
-			["risky", "What kind of culture?"],
+		{"line": "I can teach you Korean. Private lesson. My house.", "options": [
+			["witty", "I already know one Korean word: \"Anio.\""],
+			["risky", "Private lesson...? How much?"],
 			["evasive", "Sorry, I have a tteokbokki appointment."]]},
 		{"line": "I have a cat. Very cute cat. You want to see my cat?", "options": [
 			["witty", "Send your cat my regards. From very far away."],
