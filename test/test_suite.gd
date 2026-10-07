@@ -248,7 +248,7 @@ func _test_main_flow() -> void:
 	dlg.time_left = 0.01
 	main.call("_update_encounter", 0.1)
 	main.call("_update_encounter", 2.0)
-	_check(main.get("_screen") == "result" and str((main.get("_result_title") as Label).text) == "GAME OVER", "losing last life is game over")
+	_check(main.get("_screen") == "stage_clear" and int(main.get("_stage_index")) == 0, "timeout on last life retries stage 1 instead of game over")
 	main.call("_start_new_run")
 	world.set_physics_process(false)
 	main.set("_stage_index", 3)
