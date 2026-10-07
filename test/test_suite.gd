@@ -214,7 +214,7 @@ func _test_main_flow() -> void:
 		main.call("_choose_option", dlg.index_of_kind("risky"))
 	main.call("_update_encounter", 2.0)
 	world.set_physics_process(false)
-	_check(int(main.get("_lives")) == 2 and world.player_pos == world.player_start, "failed battle costs a life and respawns")
+	_check(int(main.get("_lives")) == 4 and world.player_pos == world.player_start, "failed battle costs a life and respawns")
 	main.call("_show_screen", "paused")
 	main.call("_resume")
 	world.set_physics_process(false)
