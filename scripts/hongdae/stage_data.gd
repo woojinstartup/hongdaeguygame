@@ -108,6 +108,8 @@ const STAGES := [
 			{"kind": "basic", "route": [Vector2i(1, 7), Vector2i(8, 7)]},
 			{"kind": "dasher", "route": [Vector2i(6, 1), Vector2i(11, 1)]},
 			{"kind": "basic", "route": [Vector2i(15, 7), Vector2i(18, 7)]},
+			{"kind": "photo", "route": [Vector2i(10, 5), Vector2i(15, 5)]},
+			{"kind": "basic", "route": [Vector2i(10, 7), Vector2i(13, 7)]},
 		],
 	},
 ]

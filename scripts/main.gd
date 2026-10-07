@@ -65,6 +65,7 @@ var _howto_screen: Control
 var _screen := "title"
 var _stage_index := 0
 var _lives := START_LIVES
+var _retry_pending := false
 var _score := 0
 var _escapes := 0
 var _run_elapsed := 0.0
@@ -457,6 +458,7 @@ func _show_screen(screen: String) -> void:
 
 func _start_new_run() -> void:
 	_stage_index = 0
+	_retry_pending = false
 	_lives = START_LIVES
 	_score = 0
 	_escapes = 0
@@ -556,8 +558,23 @@ func _on_stage_cleared() -> void:
 	_stage_body.text = "+%d points (stage + speed bonus).\nNext: %s" % [_last_stage_bonus, HEStageData.get_stage(_stage_index + 1)["name"]]
 	_show_screen("stage_clear")
 
+## No game over: losing every life restarts the current stage with full lives.
+func _offer_stage_retry() -> void:
+	_retry_pending = true
+	_lives = START_LIVES
+	_world.active = false
+	_stage_title.text = "CAUGHT! He got your Insta..."
+	_stage_body.text = "No game over. Try STAGE %d/%d again with %d lives.\n%s" % [_stage_index + 1, HEStageData.count(), START_LIVES, HEStageData.get_stage(_stage_index)["name"]]
+	_show_screen("stage_clear")
+
 func _advance_stage() -> void:
 	if _screen != "stage_clear":
+		return
+	if _retry_pending:
+		_retry_pending = false
+		_world.load_stage(_stage_index, {"inventory": _world.inventory, "shield": _world.shield})
+		_update_hud()
+		_show_screen("playing")
 		return
 	_stage_index += 1
 	_world.load_stage(_stage_index, {"inventory": _world.inventory, "shield": _world.shield})
@@ -698,8 +715,7 @@ func _close_encounter() -> void:
 		return
 	_lives -= 1
 	if _lives <= 0:
-		_lives = 0
-		_finish_run(false)
+		_offer_stage_retry()
 		return
 	_world.respawn()
 	_world.add_bubble(_world.player_pos, "Deep breath. Try again.", YELLOW)
