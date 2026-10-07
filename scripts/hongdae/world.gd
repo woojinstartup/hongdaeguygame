@@ -224,7 +224,7 @@ func use_item(item: String) -> bool:
 	match item:
 		"airpods":
 			airpods_time = AIRPODS_TIME
-			add_bubble(player_pos, "*AirPods in. Can't hear you.*", Color.WHITE)
+			add_bubble(player_pos, "(AirPods in. Can't hear you.)", Color.WHITE)
 		"friend":
 			friend_time = FRIEND_TIME
 			add_bubble(player_pos, "\"Hey bestie! Over here!\"", Color("ff8c42"))
@@ -282,7 +282,7 @@ func _update_enemy(e: Dictionary, delta: float) -> void:
 			e["revealed"] = true
 			e["state"] = "alert"
 			e["timer"] = ALERT_TIME
-			add_bubble(e["pos"], "Let me take your photo!", Color("ff4fa3"))
+			add_bubble(e["pos"], "Picture-eu? Just one!", Color("ff4fa3"))
 			return
 		_patrol(e, delta)
 		return
@@ -331,7 +331,7 @@ func _chase(e: Dictionary, delta: float) -> void:
 			e["facing"] = e["dash_dir"]
 			e["dash_time"] = 0.45
 			e["dash_cd"] = 2.2
-			add_bubble(e["pos"], "Instagram?!", Color("ff4fa3"))
+			add_bubble(e["pos"], "Insta ID?!", Color("ff4fa3"))
 			return
 	_move_toward_point(e, e["last_seen"], CHASE_SPEEDS[e["kind"]] * delta)
 
@@ -425,12 +425,12 @@ func _update_boss(e: Dictionary, delta: float) -> void:
 		for i: int in 10:
 			var a := TAU * i / 10.0 + _clock
 			bullets.append({"pos": e["pos"], "vel": Vector2.RIGHT.rotated(a) * 40.0, "life": 4.0})
-		add_bubble(e["pos"], "OPEN-MINDED?!", Color("ffd23f"))
+		add_bubble(e["pos"], "OPEN MINDEU?!", Color("ffd23f"))
 	else:
 		var aim: Vector2 = (player_pos - e["pos"]).normalized()
 		for spread: float in [-0.25, 0.0, 0.25]:
 			bullets.append({"pos": e["pos"], "vel": aim.rotated(spread) * 62.0, "life": 4.0})
-		add_bubble(e["pos"], "Instagram? Kakao? Club?", Color("ffd23f"))
+		add_bubble(e["pos"], "Do you libe alone?!", Color("ffd23f"))
 
 func _update_bullets(delta: float) -> void:
 	var keep: Array = []

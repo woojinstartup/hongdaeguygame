@@ -11,88 +11,90 @@ const BOSS_EVASIVE_CHANCE := 0.35
 
 const OPENERS := {
 	"basic": [
-		{"line": "Are you open-minded?", "options": [
-			["witty", "No. I'm closed. Like a store at 3 AM."],
-			["risky", "What do you mean by that?"],
-			["evasive", "*Pretend to read the subway map*"]]},
-		{"line": "Do you live alone?", "options": [
-			["witty", "I live with four bodyguards and a goose."],
-			["risky", "Why do you ask?"],
-			["evasive", "*Fake a phone call in Finnish*"]]},
-		{"line": "You are so beautiful. Coffee?", "options": [
-			["witty", "I only drink coffee with people who don't ask that."],
-			["risky", "Maybe... where?"],
-			["evasive", "*Point behind him and walk away*"]]},
-		{"line": "Where are you from? I love foreigner.", "options": [
-			["witty", "From the 'Not Interested' region."],
-			["risky", "Canada. Why?"],
-			["evasive", "*Nod politely and speed-walk*"]]},
+		{"line": "Hello~ where are you from? ...Are you open mindeu?", "options": [
+			["witty", "My mind is open. This conversation is closed."],
+			["risky", "Open mindeu...? What do you mean?"],
+			["evasive", "(Pretend to read the subway map)"]]},
+		{"line": "Excuse me~ do you libe alone?", "options": [
+			["witty", "No. I live with my 6 brothers. They're all boxers."],
+			["risky", "Why do you ask...?"],
+			["evasive", "(Fake a phone call in Finnish)"]]},
+		{"line": "Wow, you look like Taylor Swift. Really. I am serious.", "options": [
+			["witty", "Then you know I'll write a song about this. A bad one."],
+			["risky", "Wait, really? Taylor Swift?"],
+			["evasive", "(Point behind him and walk away)"]]},
+		{"line": "Don't you want Korean guy? Korean guy is very romantic.", "options": [
+			["witty", "I want Korean BBQ. Not Korean guy."],
+			["risky", "Romantic how...?"],
+			["evasive", "(Nod politely and speed-walk)"]]},
 	],
 	"dasher": [
-		{"line": "What's your Instagram?", "options": [
-			["witty", "@not_today_hongdae. It's private. Forever."],
-			["risky", "Why do you want it?"],
-			["evasive", "*Show phone: 0% battery*"]]},
-		{"line": "Can I get your KakaoTalk?", "options": [
-			["witty", "Sorry, I only talk via carrier pigeon."],
-			["risky", "I don't really use Kakao..."],
-			["evasive", "*Type random numbers and walk off*"]]},
+		{"line": "Hey hey hey! Insta ID? Give me your Insta!", "options": [
+			["witty", "It's @not_interested. Private account."],
+			["risky", "Uh... why do you need it?"],
+			["evasive", "(Show phone: 0% battery)"]]},
+		{"line": "Kakao-talk? You have Kakao? I add you. Quickly quickly!", "options": [
+			["witty", "I only use carrier pigeon. Sorry."],
+			["risky", "Okay... what's your ID?"],
+			["evasive", "(Type random numbers and run)"]]},
 	],
 	"photo": [
-		{"line": "Let me take your photo! Very pretty!", "options": [
-			["witty", "Sure. Here's a photo of me leaving."],
-			["risky", "Uh... okay, just one?"],
-			["evasive", "*Cover face with tourist map*"]]},
-		{"line": "You look like a model. Instagram model?", "options": [
-			["witty", "Yes. I model 'walking away'."],
-			["risky", "Haha, really? You think so?"],
-			["evasive", "*Blind him with the flash*"]]},
+		{"line": "You are so beautiful. I am photographer. Picture-eu? Just one.", "options": [
+			["witty", "Sure. Here's a picture of me saying no."],
+			["risky", "Is this for a portfolio...?"],
+			["evasive", "(Cover face with tourist map)"]]},
+		{"line": "Your style is very unique. Model? You want to be model?", "options": [
+			["witty", "I model one thing: walking away."],
+			["risky", "Model for what agency?"],
+			["evasive", "(Blind him with the phone flash)"]]},
 	],
 	"trio": [
-		{"line": "Hey! My friends want to say hi!", "options": [
-			["witty", "Tell your friends I said bye."],
-			["risky", "Hi... all of you?"],
-			["evasive", "*Duck into the crowd*"]]},
-		{"line": "We are three. You are one. Drink together?", "options": [
+		{"line": "Hi~ where are you from? We are three. You are one. Drink together?", "options": [
 			["witty", "Great math. Here's more: zero chance."],
 			["risky", "Just one drink...?"],
-			["evasive", "*Pretend your friend is waving*"]]},
+			["evasive", "(Duck into the busking crowd)"]]},
+		{"line": "Your dance moves so cool! Club together? We know VIP!", "options": [
+			["witty", "I wasn't dancing. I was escaping."],
+			["risky", "VIP? Which club?"],
+			["evasive", "(Pretend your friend is waving)"]]},
 	],
 	"boss": [
-		{"line": "I am the Hongdae Guy King. Are you... OPEN-MINDED?", "options": [
+		{"line": "I am Hongdae Guy King. Tell me honestly... are you OPEN MINDEU?", "options": [
 			["witty", "My mind is open. My schedule is closed."],
 			["risky", "King of what, exactly?"],
-			["evasive", "*Throw a hotteok and run*"]]},
+			["evasive", "(Throw a hotteok and run)"]]},
 	],
 }
-
 const FOLLOW_UPS := {
 	"default": [
-		{"line": "Ah, you know... open mind-eu. Korean culture experience?", "options": [
+		{"line": "Ah~ you know... open mindeu. Korean culture experience?", "options": [
 			["witty", "I already experienced it. It's you. Bye."],
 			["risky", "What kind of culture?"],
-			["evasive", "*Get very interested in a tteokbokki stall*"]]},
-		{"line": "My apartment has a very nice view. Netflix?", "options": [
-			["witty", "My hotel has a nicer view: you, leaving."],
-			["risky", "What would we watch?"],
-			["evasive", "*Join the nearest busking crowd*"]]},
-		{"line": "Just 5 minutes! I teach you Korean!", "options": [
-			["witty", "I know one word already: 'Annyeong'. Bye."],
-			["risky", "Five minutes... teach me what?"],
-			["evasive", "*Sprint toward a taxi*"]]},
+			["evasive", "(Get very interested in a tteokbokki stall)"]]},
+		{"line": "I have a cat. Very cute cat. You want to see my cat?", "options": [
+			["witty", "Send your cat my regards. From very far away."],
+			["risky", "...What's the cat's name?"],
+			["evasive", "(Join the nearest busking crowd)"]]},
+		{"line": "Ramyeon meokgo gallae? ...It means, ramen at my house. Only ramen.", "options": [
+			["witty", "I know what it means. The answer is also 'no'."],
+			["risky", "Only ramen? Promise?"],
+			["evasive", "(Sprint toward a taxi)"]]},
+		{"line": "So... you libe alone? Hotel? Airbnb? Which one?", "options": [
+			["witty", "I live with Interpol. They're watching right now."],
+			["risky", "Airbnb... why?"],
+			["evasive", "(Walk into the 24/7 store and stay there)"]]},
 	],
 	"boss": [
-		{"line": "Every foreigner says yes to the King. Club? VIP table?", "options": [
+		{"line": "Every foreigner say yes to the King. Club? VIP table? Open mindeu?", "options": [
 			["witty", "Your VIP table is a table for one."],
 			["risky", "VIP? What's included?"],
-			["evasive", "*Call a taxi very loudly*"]]},
-		{"line": "I have the newest iPhone. Three cameras. For you.", "options": [
-			["witty", "Use all three to film me leaving."],
+			["evasive", "(Call a taxi very loudly)"]]},
+		{"line": "I have newest iPhone. Three camera. And I libe alone. Perfect, yes?", "options": [
+			["witty", "Use all three cameras to film me leaving."],
 			["risky", "Okay, that IS a nice phone..."],
-			["evasive", "*Hide behind a street food cart*"]]},
+			["evasive", "(Hide behind a street food cart)"]]},
 	],
 }
-
 var kind := "basic"
 var round_index := 1
 var wins := 0

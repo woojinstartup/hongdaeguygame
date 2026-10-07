@@ -21,7 +21,7 @@ func _capture() -> void:
 		world.step(1.0 / 60.0)
 	world.player_pos = world.tile_center(Vector2i(5, 5))
 	world.enemies[0]["state"] = "alert"
-	world.add_bubble(world.enemies[0]["pos"], "Are you open-minded?", Color("ff4fa3"))
+	world.add_bubble(world.enemies[0]["pos"], "Are you open mindeu?", Color("ff4fa3"))
 	world.set_physics_process(false)
 	main._update_hud()
 	await _shot(out + "/stage1.png")
@@ -36,7 +36,7 @@ func _capture() -> void:
 		await _shot(out + "/stage%d.png" % (idx + 1))
 	world.shield = 0
 	world.grace_time = 0.0
-	world._on_contact(0)
+	world._on_contact(1)
 	main._update_encounter(1.0)
 	await _shot(out + "/encounter.png")
 	quit(0)

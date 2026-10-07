@@ -229,7 +229,7 @@ func _build_title() -> void:
 	title.add_theme_color_override("font_outline_color", PURPLE)
 	title.add_theme_constant_override("outline_size", 14)
 	box.add_child(title)
-	var sub := _label("Are You Open-Minded?  (No.)", 30, YELLOW, true)
+	var sub := _label("Are You Open Mindeu?  (No.)", 30, YELLOW, true)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(sub)
 	var tag := _label("You're a tourist in Hongdae. Leather jackets are everywhere. Get to your hotel.", 20, TEXT)
@@ -316,7 +316,7 @@ func _build_encounter() -> void:
 	box.add_theme_constant_override("separation", 12)
 	_enc_name = _label("", 20, MUTED, true)
 	box.add_child(_enc_name)
-	_enc_cutin = _label("Open-mind-eu?", 64, PINK, true)
+	_enc_cutin = _label("Are you open mindeu?", 64, PINK, true)
 	_enc_cutin.add_theme_color_override("font_outline_color", YELLOW)
 	_enc_cutin.add_theme_constant_override("outline_size", 6)
 	box.add_child(_enc_cutin)
@@ -629,7 +629,7 @@ func _on_encounter_started(kind: String) -> void:
 	_enc_phase = "cutin"
 	_enc_phase_time = 0.9
 	_enc_cutin.visible = true
-	_enc_cutin.text = "OPEN-MIND-EU?!" if kind == "boss" else "Open-mind-eu?"
+	_enc_cutin.text = "OPEN MINDEU?!" if kind == "boss" else "Are you open mindeu?"
 	_enc_message.text = ""
 	_enc_line.text = ""
 	_enc_round.text = ""
