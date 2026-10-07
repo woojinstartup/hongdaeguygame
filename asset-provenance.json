@@ -143,7 +143,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:c88485773d6ff9361e036f37d8ac76fb77b8c3f7c041c3f52c8dd222adc8cc21",
-      "shipped": true,
+      "shipped": false,
       "size": 68885,
       "source": {
         "starterId": "game-generic-v56"
@@ -163,7 +163,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:0d9fb751bca5507ba14f7090573e6605a94753390a9e7c53bf2f590f0a24918d",
-      "shipped": true,
+      "shipped": false,
       "size": 64998,
       "source": {
         "starterId": "game-generic-v56"
@@ -183,7 +183,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:ec4ab7867e60fb483dd438459f587b478aac4c1e71ec4fe509ce74a18de34216",
-      "shipped": true,
+      "shipped": false,
       "size": 971282,
       "source": {
         "starterId": "game-generic-v56"
@@ -203,7 +203,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:4b6916024c69961fbfa7cdc929c68f547fea4561e61ebdb3405b3aba0efbd94d",
-      "shipped": true,
+      "shipped": false,
       "size": 58603,
       "source": {
         "starterId": "game-generic-v56"
@@ -303,7 +303,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:ffd7906f240f928e785d7c19a9e7a7b5dfab0d7483be5205dda3e4ba17ebe06a",
-      "shipped": true,
+      "shipped": false,
       "size": 50950,
       "source": {
         "starterId": "game-generic-v56"
@@ -323,7 +323,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:6e7354aa6510a462717218b09b9d784bb161b87878bff62ef4f2a9d03c053de7",
-      "shipped": true,
+      "shipped": false,
       "size": 53724,
       "source": {
         "starterId": "game-generic-v56"
@@ -343,7 +343,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:6a48a85886c0551c1af0df576b0225f0ec3ae86b326fd84fc614083fbfe2908b",
-      "shipped": true,
+      "shipped": false,
       "size": 37238,
       "source": {
         "starterId": "game-generic-v56"
@@ -363,7 +363,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:8cebf0cf730ca35c8c8697192ef78121c926442328a0725e0bd3e31701d64f13",
-      "shipped": true,
+      "shipped": false,
       "size": 39659,
       "source": {
         "starterId": "game-generic-v56"
@@ -383,7 +383,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:96874c000866b2e7503b40da73888afb918ae36e462f51488415157da52a8637",
-      "shipped": true,
+      "shipped": false,
       "size": 49145,
       "source": {
         "starterId": "game-generic-v56"
@@ -427,7 +427,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:c88a4725838df85e72c7270865848f275b62c525c5679a2a8b7ecefb1af82d4b",
-      "shipped": true,
+      "shipped": false,
       "size": 115691,
       "source": {
         "starterId": "game-generic-v56"
@@ -447,7 +447,7 @@
       "referenceEvidence": [],
       "regions": [],
       "sha256": "sha256:8860db07768f093d4effea10b51431f76a1552d4bc7fd4e57757f189c51f0429",
-      "shipped": true,
+      "shipped": false,
       "size": 155592,
       "source": {
         "starterId": "game-generic-v56"
@@ -495,9 +495,9 @@
         ]
       }
     ],
-    "pckSha256": "sha256:f41ee222b0736510d37a3e37139c03aa350bc7e24bdf6d11a1268abc87535e49",
+    "pckSha256": "sha256:20706c379dc48af25b5fce5c3cd4048243ad4ba6366fcc24f96e64d59b9420bd",
     "profile": "release",
-    "sourceFingerprint": "sha256:c647ac73fab429e2dfc75ebd101dc1446365ab3ade3f1e50693f03332326e8f8"
+    "sourceFingerprint": "sha256:2420f176545840c9229824989355c3c455dbced58ff66c95ea6ab8ee78ddc4b1"
   },
   "procedures": {},
   "summary": {
@@ -531,7 +531,7 @@
     "files": {
       "downloaded": 0,
       "retained": 21,
-      "shipped": 21,
+      "shipped": 10,
       "used": 9
     },
     "origins": {
@@ -562,7 +562,7 @@
       },
       "template": {
         "retained": 15,
-        "shipped": 15,
+        "shipped": 4,
         "used": 3
       },
       "unknown": {
