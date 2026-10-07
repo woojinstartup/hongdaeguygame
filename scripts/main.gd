@@ -229,7 +229,7 @@ func _build_title() -> void:
 	title.add_theme_color_override("font_outline_color", PURPLE)
 	title.add_theme_constant_override("outline_size", 14)
 	box.add_child(title)
-	var sub := _label("Are You Open Mindeu?  (No.)", 30, YELLOW, true)
+	var sub := _label("Are You Open-Mindeu?  (No.)", 30, YELLOW, true)
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	box.add_child(sub)
 	var tag := _label("You're a tourist in Hongdae. Leather jackets are everywhere. Get to your hotel.", 20, TEXT)
