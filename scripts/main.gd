@@ -558,13 +558,14 @@ func _on_stage_cleared() -> void:
 	_stage_body.text = "+%d points (stage + speed bonus).\nNext: %s" % [_last_stage_bonus, HEStageData.get_stage(_stage_index + 1)["name"]]
 	_show_screen("stage_clear")
 
-## No game over: losing every life restarts the current stage with full lives.
-func _offer_stage_retry() -> void:
+## Falling on the final stage sends you back one stage with full lives instead of game over.
+func _offer_stage_retry(target_index: int) -> void:
 	_retry_pending = true
+	_stage_index = clampi(target_index, 0, HEStageData.count() - 1)
 	_lives = START_LIVES
 	_world.active = false
-	_stage_title.text = "CAUGHT! He got your Insta..."
-	_stage_body.text = "No game over. Try STAGE %d/%d again with %d lives.\n%s" % [_stage_index + 1, HEStageData.count(), START_LIVES, HEStageData.get_stage(_stage_index)["name"]]
+	_stage_title.text = "CAUGHT BY THE KING!"
+	_stage_body.text = "He got your Insta... but you're not done yet.\nBack to STAGE %d/%d with %d lives: %s" % [_stage_index + 1, HEStageData.count(), START_LIVES, HEStageData.get_stage(_stage_index)["name"]]
 	_show_screen("stage_clear")
 
 func _advance_stage() -> void:
@@ -715,6 +716,9 @@ func _close_encounter() -> void:
 		return
 	_lives -= 1
 	if _lives <= 0:
+		if _stage_index == HEStageData.count() - 1:
+			_offer_stage_retry(_stage_index - 1)
+			return
 		_lives = 0
 		_finish_run(false)
 		return
