@@ -175,6 +175,10 @@ func _test_boss_bullets() -> void:
 	var w := _new_world(3)
 	var boss: Dictionary = w.enemies[0]
 	_check(boss["kind"] == "boss", "boss loaded")
+	_check(w.chase_speed("basic") > HEWorld.CHASE_SPEEDS["basic"], "later stages chase faster")
+	var w1 := _new_world(0)
+	_check(w1.chase_speed("basic") == HEWorld.CHASE_SPEEDS["basic"], "stage 1 chase speed unchanged")
+	w1.free()
 	for i: int in range(1, w.enemies.size()):
 		w.enemies[i]["state"] = "stunned"
 		w.enemies[i]["timer"] = 99.0

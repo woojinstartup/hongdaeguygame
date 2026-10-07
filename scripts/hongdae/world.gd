@@ -351,7 +351,7 @@ func _chase(e: Dictionary, delta: float) -> void:
 			e["dash_cd"] = 2.2
 			add_bubble(e["pos"], "Insta ID?!", Color("ff4fa3"))
 			return
-	_move_toward_point(e, e["last_seen"], CHASE_SPEEDS[e["kind"]] * delta)
+	_move_toward_point(e, e["last_seen"], chase_speed(e["kind"]) * delta)
 
 func _patrol(e: Dictionary, delta: float) -> void:
 	var route: Array = e["route"]
@@ -432,30 +432,48 @@ func next_step(from: Vector2i, to: Vector2i) -> Vector2i:
 
 func _update_boss(e: Dictionary, delta: float) -> void:
 	e["facing"] = (player_pos - e["pos"]).normalized()
-	if e["pos"].distance_to(player_pos) > 150.0:
-		return
 	e["fire"] = float(e["fire"]) - delta
 	if float(e["fire"]) > 0.0:
 		return
-	e["fire"] = 1.6
-	e["pattern"] = (int(e["pattern"]) + 1) % 2
-	if int(e["pattern"]) == 0:
-		for i: int in 10:
-			var a := TAU * i / 10.0 + _clock
-			bullets.append({"pos": e["pos"], "vel": Vector2.RIGHT.rotated(a) * 40.0, "life": 4.0})
-		add_bubble(e["pos"], "OPEN MINDEU?!", Color("ffd23f"))
-	else:
-		var aim: Vector2 = (player_pos - e["pos"]).normalized()
-		for spread: float in [-0.25, 0.0, 0.25]:
-			bullets.append({"pos": e["pos"], "vel": aim.rotated(spread) * 62.0, "life": 4.0})
-		add_bubble(e["pos"], "Do you libe alone?!", Color("ffd23f"))
+	e["fire"] = 1.15
+	e["pattern"] = (int(e["pattern"]) + 1) % 3
+	var aim: Vector2 = (player_pos - e["pos"]).normalized()
+	match int(e["pattern"]):
+		0:
+			for i: int in 18:
+				var a := TAU * i / 18.0 + _clock * 0.7
+				_boss_shot(e, Vector2.RIGHT.rotated(a) * 46.0)
+			add_bubble(e["pos"], "OPEN MINDEU?!", Color("ffd23f"))
+		1:
+			for i: int in 7:
+				_boss_shot(e, aim.rotated((i - 3) * 0.22) * 60.0)
+			add_bubble(e["pos"], "Do you libe alone?!", Color("ffd23f"))
+		_:
+			for i: int in 12:
+				var a2 := TAU * i / 12.0 + _clock * 1.9
+				_boss_shot(e, Vector2.RIGHT.rotated(a2) * 34.0)
+				_boss_shot(e, Vector2.RIGHT.rotated(a2 + 0.26) * 52.0)
+			add_bubble(e["pos"], "You want to see my cat?!", Color("ffd23f"))
+
+## Pickup-line hearts fly through walls and cover the whole map.
+func _boss_shot(e: Dictionary, vel: Vector2) -> void:
+	bullets.append({"pos": e["pos"], "vel": vel, "life": 9.0})
+
+## Chasers get faster on later stages (stage 1 keeps the base speed).
+const CHASE_STAGE_MULT := [1.0, 1.2, 1.35, 1.5]
+const CHASE_SPEED_CAP := 72.0
+
+func chase_speed(kind: String) -> float:
+	var base: float = float(CHASE_SPEEDS[kind])
+	var m: float = CHASE_STAGE_MULT[clampi(stage_index, 0, CHASE_STAGE_MULT.size() - 1)]
+	return minf(base * m, maxf(CHASE_SPEED_CAP, base))
 
 func _update_bullets(delta: float) -> void:
 	var keep: Array = []
 	for b: Dictionary in bullets:
 		b["pos"] = b["pos"] + b["vel"] * delta
 		b["life"] = float(b["life"]) - delta
-		if float(b["life"]) <= 0.0 or blocks_sight(tile_of(b["pos"])):
+		if float(b["life"]) <= 0.0 or not Rect2(-8, -8, COLS * TILE + 16, ROWS * TILE + 16).has_point(b["pos"]):
 			continue
 		if b["pos"].distance_to(player_pos) < 6.0 and grace_time <= 0.0 and not player_in_store():
 			if airpods_time > 0.0 or friend_time > 0.0:
