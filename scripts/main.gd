@@ -715,7 +715,8 @@ func _close_encounter() -> void:
 		return
 	_lives -= 1
 	if _lives <= 0:
-		_offer_stage_retry()
+		_lives = 0
+		_finish_run(false)
 		return
 	_world.respawn()
 	_world.add_bubble(_world.player_pos, "Deep breath. Try again.", YELLOW)
