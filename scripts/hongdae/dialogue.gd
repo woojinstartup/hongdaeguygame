@@ -99,6 +99,8 @@ var kind := "basic"
 var round_index := 1
 var wins := 0
 var wins_needed := 1
+## Hard battles (Yeontral Park): nobody escapes on question 1; from question 2 a witty reply always escapes.
+var hard := false
 var current: Dictionary = {}
 var options: Array = []
 var time_left := ROUND_TIME
@@ -106,7 +108,8 @@ var finished := false
 var outcome := ""
 var _rng := RandomNumberGenerator.new()
 
-func start(enemy_kind: String, seed_value: int = -1) -> void:
+func start(enemy_kind: String, seed_value: int = -1, hard_mode: bool = false) -> void:
+	hard = hard_mode and enemy_kind != "boss"
 	kind = enemy_kind if OPENERS.has(enemy_kind) else "basic"
 	if seed_value >= 0:
 		_rng.seed = seed_value
@@ -150,11 +153,17 @@ func choose(index: int, roll: float = -1.0) -> Dictionary:
 	var picked: Dictionary = options[index]
 	match str(picked["kind"]):
 		"witty":
+			if hard:
+				if round_index == 1:
+					return _next_round("Nice burn... but he's a Yeontral pro. He keeps going!")
+				return _finish("escape", "Burn! He is speechless. You walk away.")
 			wins += 1
 			if wins >= wins_needed:
 				return _finish("escape", "Burn! He is speechless. You walk away.")
 			return _next_round("He staggers... but the King keeps going!")
 		"evasive":
+			if hard and round_index == 1:
+				return _next_round("He follows you. Persistent...")
 			var chance := BOSS_EVASIVE_CHANCE if kind == "boss" else EVASIVE_CHANCE
 			var value := roll if roll >= 0.0 else _rng.randf()
 			if value < chance:

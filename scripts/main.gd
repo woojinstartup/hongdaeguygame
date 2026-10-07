@@ -640,7 +640,7 @@ func _leaderboard_back() -> void:
 # ------------------------------------------------------------------ encounters
 
 func _on_encounter_started(kind: String) -> void:
-	_dialogue.start(kind)
+	_dialogue.start(kind, -1, _stage_index == 2)
 	_portrait.call("set_kind", kind)
 	_enc_name.text = str(KIND_NAMES.get(kind, "Hongdae Guy")) + " approaches!"
 	_enc_phase = "cutin"

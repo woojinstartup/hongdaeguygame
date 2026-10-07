@@ -92,6 +92,11 @@ func _test_dialogue() -> void:
 	_check(d.choose(d.index_of_kind("witty")).get("result") == "escape", "second boss burn escapes")
 	d.start("photo", 6)
 	_check(d.tick(HEDialogue.ROUND_TIME + 0.1).get("result") == "fail", "timeout fails")
+	d.start("basic", 9, true)
+	_check(d.choose(d.index_of_kind("witty")).get("result") == "continue", "hard: witty on question 1 does not escape")
+	_check(d.choose(d.index_of_kind("witty")).get("result") == "escape", "hard: witty on question 2 always escapes")
+	d.start("basic", 9, true)
+	_check(d.choose(d.index_of_kind("evasive"), 0.0).get("result") == "continue", "hard: evasive on question 1 does not escape")
 
 func _test_world_detection_and_contact() -> void:
 	var w := _new_world(0)
