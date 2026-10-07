@@ -52,6 +52,7 @@ const STAGES := [
 			{"kind": "basic", "route": [Vector2i(3, 5), Vector2i(14, 5)]},
 			{"kind": "dasher", "route": [Vector2i(9, 7), Vector2i(14, 7)]},
 			{"kind": "photo", "route": [Vector2i(12, 1), Vector2i(18, 1)]},
+			{"kind": "basic", "route": [Vector2i(18, 2), Vector2i(18, 5)]},
 		],
 	},
 	{
@@ -79,6 +80,8 @@ const STAGES := [
 			{"kind": "dasher", "route": [Vector2i(6, 7), Vector2i(17, 7)]},
 			{"kind": "photo", "route": [Vector2i(13, 1), Vector2i(18, 1)]},
 			{"kind": "basic", "route": [Vector2i(1, 3), Vector2i(18, 3)]},
+			{"kind": "basic", "route": [Vector2i(6, 1), Vector2i(11, 1)]},
+			{"kind": "dasher", "route": [Vector2i(18, 2), Vector2i(18, 5)]},
 		],
 	},
 	{
