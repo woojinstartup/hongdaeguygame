@@ -172,6 +172,7 @@ func _move_player(delta: float) -> void:
 	if absf(dir.x) > 0.1:
 		facing_left = dir.x < 0.0
 	var speed := PLAYER_SPEED * (CROWD_SPEED_MULT if tile_char(tile_of(player_pos)) == "B" else 1.0)
+	_corner_assist(dir, speed * delta)
 	var motion := dir * speed * delta
 	var next := player_pos + Vector2(motion.x, 0)
 	if not _player_collides(next):
@@ -185,6 +186,16 @@ func _player_collides(p: Vector2) -> bool:
 		if is_solid_for_player(tile_of(p + corner * PLAYER_RADIUS)):
 			return true
 	return false
+
+## Pac-Man style cornering: when steering into a side corridor, slide onto the
+## lane centre so one-tile-wide streets never snag on wall corners.
+func _corner_assist(dir: Vector2, amount: float) -> void:
+	var here := tile_of(player_pos)
+	var centre := tile_center(here)
+	if absf(dir.y) > 0.1 and not is_solid_for_player(here + Vector2i(0, int(signf(dir.y)))):
+		player_pos.x = move_toward(player_pos.x, centre.x, amount * 1.5)
+	if absf(dir.x) > 0.1 and not is_solid_for_player(here + Vector2i(int(signf(dir.x)), 0)):
+		player_pos.y = move_toward(player_pos.y, centre.y, amount * 1.5)
 
 func _collect_items() -> void:
 	var t := tile_of(player_pos)

@@ -12,6 +12,7 @@ func _run() -> void:
 	_test_dialogue()
 	_test_world_detection_and_contact()
 	_test_world_hiding_items_and_shield()
+	_test_corner_assist()
 	_test_boss_bullets()
 	await _test_main_flow()
 	if _failures.is_empty():
@@ -95,12 +96,12 @@ func _test_dialogue() -> void:
 func _test_world_detection_and_contact() -> void:
 	var w := _new_world(0)
 	var e: Dictionary = w.enemies[0]
-	e["pos"] = w.tile_center(Vector2i(3, 5))
+	e["pos"] = w.tile_center(Vector2i(8, 5))
 	e["facing"] = Vector2.RIGHT
-	e["route"] = [Vector2i(3, 5)]
+	e["route"] = [Vector2i(8, 5)]
 	w.enemies[1]["pos"] = w.tile_center(Vector2i(18, 1))
 	w.enemies[1]["route"] = [Vector2i(18, 1)]
-	w.player_pos = w.tile_center(Vector2i(5, 5))
+	w.player_pos = w.tile_center(Vector2i(11, 5))
 	w.grace_time = 0.0
 	_check(w.can_see_player(e), "enemy sees player in cone")
 	var started := [""]
@@ -114,9 +115,9 @@ func _test_world_detection_and_contact() -> void:
 	_check(w.active and e["state"] == "stunned", "winning stuns the guy and resumes")
 	var w2 := _new_world(0)
 	var e2: Dictionary = w2.enemies[0]
-	e2["pos"] = w2.tile_center(Vector2i(8, 5))
+	e2["pos"] = w2.tile_center(Vector2i(12, 5))
 	e2["facing"] = Vector2.RIGHT
-	w2.player_pos = w2.tile_center(Vector2i(6, 5))
+	w2.player_pos = w2.tile_center(Vector2i(10, 5))
 	_check(not w2.can_see_player(e2), "enemy does not see behind")
 	w.free()
 	w2.free()
@@ -131,10 +132,10 @@ func _test_world_hiding_items_and_shield() -> void:
 	_check(int(w.inventory["airpods"]) == 1, "walking onto AirPods collects them")
 	_check(w.use_item("airpods") and w.airpods_time > 0.0, "AirPods activate")
 	_check(not w.use_item("airpods"), "cannot use an item you do not have")
-	w.player_pos = w.tile_center(Vector2i(11, 3))
+	w.player_pos = w.tile_center(Vector2i(12, 3))
 	_check(w.player_hidden() and w.player_in_store(), "store tile hides player")
 	var e: Dictionary = w.enemies[0]
-	e["pos"] = w.tile_center(Vector2i(11, 5))
+	e["pos"] = w.tile_center(Vector2i(12, 5))
 	e["facing"] = Vector2.UP
 	_check(not w.can_see_player(e), "hidden player is not seen")
 	w.airpods_time = 0.0
@@ -243,3 +244,13 @@ func _test_main_flow() -> void:
 	_check(bool(main.get("_submitted")), "score saves to local leaderboard")
 	main.queue_free()
 	await get_tree().process_frame
+
+func _test_corner_assist() -> void:
+	var w := _new_world(0)
+	for en: Dictionary in w.enemies:
+		en["pos"] = w.tile_center(Vector2i(1, 8))
+		en["route"] = [Vector2i(1, 8)]
+	w.player_pos = w.tile_center(Vector2i(5, 1)) + Vector2(5, 0)
+	_step(w, 0.6, Vector2.DOWN)
+	_check(w.tile_of(w.player_pos).y >= 2, "off-centre player still turns into a one-tile side street")
+	w.free()
