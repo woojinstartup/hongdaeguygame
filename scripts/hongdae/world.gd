@@ -165,37 +165,55 @@ func _input_vector() -> Vector2:
 		return move_override
 	return Input.get_vector("move_left", "move_right", "move_up", "move_down")
 
+var _step_target := Vector2i(-1, -1)
+var _step_dir := Vector2i.ZERO
+
+## Grid movement: arrows move exactly one tile at a time (hold to keep going),
+## always centred in the lane like Pac-Man.
 func _move_player(delta: float) -> void:
-	var dir: Vector2 = _input_vector()
-	if dir.length() > 1.0:
-		dir = dir.normalized()
-	if absf(dir.x) > 0.1:
-		facing_left = dir.x < 0.0
-	var speed := PLAYER_SPEED * (CROWD_SPEED_MULT if tile_char(tile_of(player_pos)) == "B" else 1.0)
-	_corner_assist(dir, speed * delta)
-	var motion := dir * speed * delta
-	var next := player_pos + Vector2(motion.x, 0)
-	if not _player_collides(next):
-		player_pos = next
-	next = player_pos + Vector2(0, motion.y)
-	if not _player_collides(next):
-		player_pos = next
-
-func _player_collides(p: Vector2) -> bool:
-	for corner: Vector2 in [Vector2(-1, -1), Vector2(1, -1), Vector2(-1, 1), Vector2(1, 1)]:
-		if is_solid_for_player(tile_of(p + corner * PLAYER_RADIUS)):
-			return true
-	return false
-
-## Pac-Man style cornering: when steering into a side corridor, slide onto the
-## lane centre so one-tile-wide streets never snag on wall corners.
-func _corner_assist(dir: Vector2, amount: float) -> void:
+	var raw: Vector2 = _input_vector()
+	var want := Vector2i.ZERO
+	if absf(raw.x) > 0.3 and absf(raw.x) >= absf(raw.y):
+		want = Vector2i(int(signf(raw.x)), 0)
+	elif absf(raw.y) > 0.3:
+		want = Vector2i(0, int(signf(raw.y)))
+	if want.x != 0:
+		facing_left = want.x < 0
 	var here := tile_of(player_pos)
-	var centre := tile_center(here)
-	if absf(dir.y) > 0.1 and not is_solid_for_player(here + Vector2i(0, int(signf(dir.y)))):
-		player_pos.x = move_toward(player_pos.x, centre.x, amount * 1.5)
-	if absf(dir.x) > 0.1 and not is_solid_for_player(here + Vector2i(int(signf(dir.x)), 0)):
-		player_pos.y = move_toward(player_pos.y, centre.y, amount * 1.5)
+	var speed := PLAYER_SPEED * (CROWD_SPEED_MULT if tile_char(here) == "B" else 1.0)
+	var budget := speed * delta
+	# Drop a stale target (respawn, stage load or teleport by tests).
+	if _step_target.x >= 0 and (tile_center(_step_target).distance_to(player_pos) > TILE * 1.05 or is_solid_for_player(_step_target)):
+		_step_target = Vector2i(-1, -1)
+	if _step_target.x < 0:
+		var centre := tile_center(here)
+		if player_pos.distance_to(centre) > 0.01:
+			var d := player_pos.distance_to(centre)
+			player_pos = player_pos.move_toward(centre, budget)
+			budget = maxf(0.0, budget - d)
+			if budget <= 0.0:
+				return
+		if want == Vector2i.ZERO or is_solid_for_player(here + want):
+			return
+		_step_dir = want
+		_step_target = here + want
+	elif want == -_step_dir:
+		# Instant reversal mid-step.
+		_step_target = _step_target + want
+		_step_dir = want
+	var goal := tile_center(_step_target)
+	var dist := player_pos.distance_to(goal)
+	if dist <= budget:
+		player_pos = goal
+		var arrived := _step_target
+		_step_target = Vector2i(-1, -1)
+		var nxt := want if want != Vector2i.ZERO else Vector2i.ZERO
+		if nxt != Vector2i.ZERO and not is_solid_for_player(arrived + nxt):
+			_step_dir = nxt
+			_step_target = arrived + nxt
+			player_pos = player_pos.move_toward(tile_center(_step_target), budget - dist)
+	else:
+		player_pos = player_pos.move_toward(goal, budget)
 
 func _collect_items() -> void:
 	var t := tile_of(player_pos)
